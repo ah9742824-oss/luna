@@ -1,0 +1,14 @@
+# Cloudflare Pages SPA fallback (Phase 8 — deployment readiness).
+#
+# Without this, opening a client-side route directly (e.g. a customer
+# bookmarks /orders/42, or refreshes /admin/products) returns a real 404
+# from Cloudflare Pages' static file server, because no actual
+# orders/42/index.html file exists — React Router only ever runs AFTER
+# index.html has loaded. This rule tells Pages to serve index.html for any
+# path that doesn't match a real static file, so React Router's <Routes>
+# can then take over client-side and render the correct page (including
+# /menu/:id, /orders/:id, /admin/*, etc — every dynamic route in App.jsx).
+#
+# 200 (not 301/302) is required — a redirect status would change the URL
+# instead of just serving different content at the same URL.
+/*    /index.html   200
