@@ -1,0 +1,28 @@
+{
+  "name": "luna-cafe-backend",
+  "version": "2.1.0",
+  "description": "LUNA Cafe - Backend API (Cloudflare Workers + Hyperdrive + Supabase PostgreSQL)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "dev:remote": "wrangler dev --remote",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "migrate": "node database/migrate.js",
+    "seed": "node database/seed.js",
+    "seed:demo-reset": "node database/seed-demo-reset.js",
+    "test": "node tests/migration.pgmem.test.mjs && node tests/orders.pgmem.test.mjs && node tests/staff-rbac.pgmem.test.mjs && node tests/payments.pgmem.test.mjs && node tests/security-audit.pgmem.test.mjs"
+  },
+  "dependencies": {
+    "@tsndr/cloudflare-worker-jwt": "^2.5.3",
+    "bcryptjs": "^2.4.3",
+    "itty-router": "^4.0.27",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "pg-mem": "^3.0.5",
+    "wrangler": "^3.99.0"
+  }
+}

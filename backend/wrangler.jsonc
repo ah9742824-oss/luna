@@ -1,0 +1,79 @@
+{
+  // LUNA Cafe API - Cloudflare Worker configuration.
+  //
+  // Reference: https://developers.cloudflare.com/workers/wrangler/configuration/
+  // Reference: https://developers.cloudflare.com/hyperdrive/
+
+  "name": "luna-cafe-api",
+  "main": "src/worker.js",
+
+  // Chosen for an August 2026 deployment. Cloudflare periodically documents
+  // new compatibility dates — check
+  // https://developers.cloudflare.com/workers/configuration/compatibility-dates/
+  // before your first deploy and bump this if a newer date is recommended.
+  "compatibility_date": "2026-08-25",
+
+  // Required so the "pg" npm package (net/tls) can run on Workers.
+  // JWT verification no longer needs this flag — it uses
+  // @tsndr/cloudflare-worker-jwt, built on the native WebCrypto API.
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Cloudflare Hyperdrive binding for PostgreSQL (Supabase) connectivity.
+  //
+  // "id" is NOT a secret — it's the identifier Wrangler prints after you run:
+  //   npx wrangler hyperdrive create luna-cafe-db --connection-string="<your-supabase-connection-string>"
+  // Replace the placeholder below with that printed ID. The actual Supabase
+  // host/user/password is stored encrypted by Cloudflare — never in this
+  // file, never in GitHub.
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "REPLACE_WITH_YOUR_HYPERDRIVE_ID"
+    }
+  ],
+
+  // Non-secret configuration. JWT_SECRET is NOT set here — it is a Worker
+  // secret, set via:
+  //   npx wrangler secret put JWT_SECRET
+  // (ADMIN_PASSWORD is only used by the local seed script, never by the
+  // Worker itself — see README.md "Environment variables & secrets".)
+  "vars": {
+    "CLIENT_URL": "http://localhost:5173",
+    // For multiple client frontends sharing this backend (section 74/81),
+    // set a comma-separated list, e.g.:
+    // "CLIENT_URL": "https://luna-cafe.pages.dev,https://client-b.example.com",
+    "JWT_EXPIRES_IN": "7d",
+    // Admin/staff session length. Customer sessions use a separate,
+    // longer-lived setting below — an admin and a customer token are never
+    // interchangeable (see middleware/customerAuth.js), so there's no harm
+    // in different expiries.
+    "CUSTOMER_JWT_EXPIRES_IN": "30d",
+    // Optional fallback business when a request sends no X-Business-Slug
+    // header. Keep this set for the current single-café deployment; remove
+    // it once multiple client frontends share this Worker so a missing
+    // header fails loudly instead of guessing the wrong business.
+    "DEFAULT_BUSINESS_SLUG": "luna-cafe"
+  }
+
+  // Rate limiting (section 98, added in the Phase 7 security audit — see
+  // middleware/rateLimit.js and backend/README.md "Rate limiting setup").
+  // Commented out because this sandbox cannot create or verify real
+  // Cloudflare Rate Limiting bindings (they require a live Cloudflare
+  // account/dashboard). middleware/rateLimit.js fails OPEN when these are
+  // absent, so the API works correctly without them — but real abuse
+  // protection requires uncommenting this block (verify the exact syntax
+  // against Cloudflare's current docs first; binding config formats do
+  // change):
+  //
+  // "unsafe": {
+  //   "bindings": [
+  //     { "name": "RATE_LIMITER_LOGIN", "type": "ratelimit", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
+  //     { "name": "RATE_LIMITER_AUTH", "type": "ratelimit", "namespace_id": "1002", "simple": { "limit": 10, "period": 60 } },
+  //     { "name": "RATE_LIMITER_ORDERS", "type": "ratelimit", "namespace_id": "1003", "simple": { "limit": 20, "period": 60 } }
+  //   ]
+  // }
+
+  // Note: ADMIN_EMAIL / ADMIN_PASSWORD are NOT Worker configuration at all —
+  // the deployed Worker has no admin-account-creation endpoint. They only
+  // exist in the local .env used by database/seed.js.
+}
