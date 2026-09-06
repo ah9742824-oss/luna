@@ -28,8 +28,7 @@
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "REPLACE_WITH_YOUR_HYPERDRIVE_ID"
-    }
+      "id": "9d05b5c9fca74d0ba661737066c03d7e"    }
   ],
 
   // Non-secret configuration. JWT_SECRET is NOT set here — it is a Worker
