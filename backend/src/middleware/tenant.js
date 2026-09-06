@@ -20,7 +20,7 @@ import { json } from '../utils/http.js';
 const BUSINESS_COLUMNS = `
   id, name, name_ar, slug, type, description, description_ar, logo_url,
   cover_url, phone, whatsapp, email, address, address_ar, latitude, longitude,
-  working_hours, social_links, theme_settings, enabled_modules, accept_orders,
+  working_hours, social_links, theme_settings, enabled_modules, accept_orders,tax_rate_percent, delivery_fee,
   is_active
 `;
 
