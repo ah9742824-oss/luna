@@ -40,10 +40,11 @@ import AdminAuditLog from './pages/admin/AdminAuditLog.jsx';
 
 export default function App() {
   return (
-    <Routes>
+    <LanguageProvider>
+      <Routes>
       {/* Public website + customer experience — CartProvider is scoped here
           only (not the admin section), since the cart is a customer concept. */}
-      <Route element={<LanguageProvider><CartProvider><PublicLayout /></CartProvider></LanguageProvider>}>
+        <Route element={<CartProvider><PublicLayout /></CartProvider>}>
         <Route path="/" element={<Home />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/menu/:id" element={<ProductDetail />} />
@@ -89,8 +90,9 @@ export default function App() {
         <Route path="staff" element={<AdminStaff />} />
         <Route path="audit-log" element={<AdminAuditLog />} />
       </Route>
-
-      <Route path="*" element={<div style={{ padding: 60, textAlign: 'center' }}>الصفحة غير موجودة (404)</div>} />
-    </Routes>
+        <Route path="*" element={<div style={{ padding: 60, textAlign: 'center' }}>الصفحة غير موجودة (404)</div>} />
+      </Routes>
+    </LanguageProvider>
   );
 }
+ 
