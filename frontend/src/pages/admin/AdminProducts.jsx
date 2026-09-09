@@ -3,6 +3,7 @@ import { api } from '../../services/api.js';
 import LoadingSpinner from '../../components/LoadingSpinner.jsx';
 import ConfirmDialog from '../../components/ConfirmDialog.jsx';
 import Toast from '../../components/Toast.jsx';
+import ImageUploader from '../../components/admin/ImageUploader.jsx';
 
 const emptyForm = {
   id: null, category_id: '', name: '', name_ar: '', description: '', description_ar: '',
@@ -135,10 +136,12 @@ export default function AdminProducts() {
                 <input className="form-control" type="number" step="0.01" min="0" value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })} required />
               </div>
-              <div className="form-group">
-                <label>رابط الصورة</label>
-                <input className="form-control" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
-              </div>
+            <ImageUploader
+  purpose="product"
+  label="صورة المنتج"
+  value={form.image_url}
+  onChange={(url) => setForm({ ...form, image_url: url })}
+/>
               <div className="form-group">
                 <label>
                   <input type="checkbox" checked={form.is_available}
